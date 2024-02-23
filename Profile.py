@@ -13,7 +13,9 @@
 # YOU DO NOT NEED TO READ OR UNDERSTAND THE JSON SERIALIZATION ASPECTS OF THIS CODE 
 # RIGHT NOW, though can you certainly take a look at it if you are curious since we 
 # already covered a bit of the JSON format in class.
-#
+
+# Profile.py
+
 import json, time
 from pathlib import Path
 

@@ -1,8 +1,6 @@
 # dsp_demo.py
 
-url = "https://ics32distributedsocial.com/"
-
 import ds_client
-server = "127.0.0.1" # replace with actual server ip address
-port = 8080 # replace with actual port
-ds_client.send(server, port, "f21demo", "pwd123", "Hello World!")
+server = "168.235.86.101" # replace with actual server ip address
+port = 3021 # replace with actual port
+ds_client.send(server, port, "noobpro", "pwd123", "Hello World!")

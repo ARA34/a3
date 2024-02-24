@@ -71,23 +71,24 @@ def send(server:str, port:int, username:str, password:str, message:str, bio:str=
 
     json_msg = ""
     usr_token = get_token(_conn, username, password)
-    if (username and password !="") and (message == ""): # joining
+
+    if (username and password !="") and (message == "") and bio == None: # joining
         json_msg = {"join": {"username": username,"password": password, "token":""}}
+        print(dsp.JOIN)
     elif message != "" and bio == None:
         json_msg = {"token":usr_token,"post":{"entry":message, "timestamp":str(time.time())}}
-        # json_msg = dsp.post(message)
-        # msg_type = dsp.POST
+        print(dsp.POST)
     elif message == "" and bio != "":
-        # json_msg = dsp.bio(bio)
-        # msg_type = dsp.BIO
         json_msg = {"token":usr_token, "bio":{"entry":bio,"timestamp":str(time.time())}}
+        print(dsp.BIO)
     else:
         print("something went wrong when assigning json_msg")
 
     json_msg = json.dumps(json_msg)
+    print(f"JSON_MSG: {json_msg}")
     write_command(_conn, json_msg)
     response = read_command(_conn)
-    print(response)
+    print(f"RESPONSE: {response}")
     # return True
     return True
   

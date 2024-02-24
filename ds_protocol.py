@@ -97,25 +97,25 @@ def join(server:str, port:int, username:str, password:str, token=""):
   join_msg = {"join": {"username": username,"password": password, "token":token}}
   join_msg = json.dumps(join_msg)
 
-  # dsp = DSPProtocol(DSPProtocol.JOIN, join_msg) # creates dspprotocl object
-  # cmd = DSPProtocol.format(dsp) # formats object into string
-  # json_msg = DSPProtocol.open(cmd)
-  # json_msg = json_msg.data
-  # json_msg = json.loads() # creates into object
 
-  dsc.send(server=server, port=port, username=username, password=password, message="")
+  dsc.send(server=server, port=port, username=username, password=password, message="",bio=None)
 
   
 
 def post(server:str, port:int, username:str, password:str, message:str):
   post_msg = {"token":"","post":{"entry":message, "timestamp":""}}
   post_msg = json.dumps(post_msg)
+
+
   dsc.send(server=server,port=port,username=username,password=password,message=message)
 
 
 
-def bio(server:str, port:int, username:str, password:str, new_bio:str):
-  bio_msg = {"token":"", "bio":{"entry":new_bio,"timestamp":str(time.time())}}
-  dsc.send(server=server, port=port, username=username, password=password,message="",bio=new_bio)
+def bio(server:str, port:int, username:str, password:str, bio:str):
+  bio_msg = {"token":"", "bio":{"entry":bio,"timestamp":str(time.time())}}
+  bio_msg = json.dumps(bio_msg)
+
+
+  dsc.send(server=server, port=port, username=username, password=password,message="",bio=bio)
 
 

@@ -51,7 +51,7 @@ def main():
                 print("There was an error saving user profile to a file")
             n_profile.load_profile(Path(file))
             print(dsp.join(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password)) # creates account
-            print(dsp.bio(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,new_bio=n_profile.bio)) # changes bio
+            print(dsp.bio(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,bio=n_profile.bio)) # changes bio
 
             
             usr_input_2 = input(OPTIONS2)

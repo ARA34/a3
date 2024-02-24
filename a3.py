@@ -21,35 +21,47 @@ def main():
 
     server = "168.235.86.101"
     port = 3021
-    dsc.send(server, port, "nsndadasnjkadn", "1234","")
+    # dsc.send(server, port, "nsndadasnjkadn", "1234","")
 
 
 
 
     # creating an account twice doesnt do anything different, just returns token
 
-    # usr_input = input(OPTIONS1)
-    # n_profile = Profile(dsuserver=None, username=None, password=None)
-    # while usr_input != "Q":
-    #     if usr_input == "join": # joins a user or loads a user
-    #         username = input("Enter username:")
-    #         password = input("Enter password:")
-    #         bio = input("Enter bio:")
-    #         n_profile.dsuserver = server
-    #         n_profile.username = username
-    #         n_profile.password = password
-    #         n_profile.bio = bio
+    usr_input = input(OPTIONS1)
+    n_profile = Profile(dsuserver=None, username=None, password=None)
+    while usr_input != "Q":
+        if usr_input == dsp.JOIN: # joins a user or loads a user
+            username = input("Enter username:")
+            password = input("Enter password:")
+            bio = input("Enter bio:")
+            n_profile.dsuserver = server
+            n_profile.username = username
+            n_profile.password = password
+            n_profile.bio = bio
 
-    #         userfile = str(currfolder) + username
-    #         userpath = Path(userfile)
-    #         try:
-    #             n_profile.save_profile(userpath)
-    #         except DsuFileError:
-    #             print("There was an error saving user profile to a file")
+            filename_dsu = username + ".dsu"
+            file = currfolder/filename_dsu
+            file.touch()
 
-    #         dsc.send(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password) # creates an account
+            try:
+                n_profile.save_profile(file)
+            except DsuFileError:
+                print("There was an error saving user profile to a file")
 
+            print(dsp.join(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,bio=n_profile.bio)) # creates account
+            
+            usr_input_2 = input(OPTIONS2)
+            n_profile.load_profile()
+            while usr_input_2 != "Q":
+                if usr_input_2 == dsp.POST:
+                    post_in = input("What would you like to post:")
+                    print(dsp.post(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,message=post_in,bio="")) # creates account
+                elif usr_input_2 == dsp.BIO:
+                    post_in = input("What would you like to change bio:")
 
+                usr_input_2 = input(OPTIONS2)
+        usr_input = input(OPTIONS1)
 
 
         

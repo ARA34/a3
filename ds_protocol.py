@@ -12,6 +12,11 @@ import json
 from collections import namedtuple
 import socket
 import Profile
+import time
+import ds_client as dsc
+
+class DSPServerError(Exception):
+  pass
 
 # the protocol for this project is just successfully parsing what you recieve from server
 
@@ -27,7 +32,42 @@ ERROR = "error" # an error occured
 OK = "ok" # Connection was success
 
 
-def extract_json(json_msg:str) -> msg_info: # Connection is a namedtuple
+# exp--protocol
+
+
+class DSPProtocol:
+  ERROR = "error"
+  OK = "ok"
+
+  JOIN = "join" # make account
+  BIO = "bio" # change bio
+  POST = "post" # make post
+  
+  def __init__(self, protocol=None, data=None) -> None:
+    self.protocol = protocol
+    self.data = data
+  
+  def format(dsp:DSPProtocol) -> str:
+    """
+    Takes a DSP object and formats it into a string
+    """
+    return f"{dsp.protocol}|{dsp.data}"
+  
+  def open(cmd:str) -> DSPProtocol:
+    """
+    Takes a string and converts to a DSP object if applicable
+    """
+
+    parts = cmd.split("|")
+    if len(parts) > 1:
+      return DSPProtocol(parts[0],parts[1])
+    else:
+      # not applicable
+      return DSPProtocol(DSPProtocol.ERROR) # returns dsp error object
+    
+
+
+def extract_json(json_msg:str) -> msg_info:
   '''
   Call the json.loads function on a json string and convert it to a DataTuple object
   
@@ -53,13 +93,30 @@ def extract_json(json_msg:str) -> msg_info: # Connection is a namedtuple
   return msg_info(type, message, token)
 
 
-def join(username:str, password:str):
-  pass
+def join(server:str, port:int, username:str, password:str, token=""):
+  join_msg = {"join": {"username": username,"password": password, "token":token}}
+  join_msg = json.dumps(join_msg)
 
-def bio():
-  pass
+  # dsp = DSPProtocol(DSPProtocol.JOIN, join_msg) # creates dspprotocl object
+  # cmd = DSPProtocol.format(dsp) # formats object into string
+  # json_msg = DSPProtocol.open(cmd)
+  # json_msg = json_msg.data
+  # json_msg = json.loads() # creates into object
 
-def post():
-  pass
+  dsc.send(server=server, port=port, username=username, password=password, message="")
+
   
+
+def post(server:str, port:int, username:str, password:str, message:str):
+  post_msg = {"token":"","post":{"entry":message, "timestamp":""}}
+  post_msg = json.dumps(post_msg)
+
+
+  dsc.send(server=server,port=port,username=username,password=password,message=message,bio="")
+
+
+
+def bio(new_bio:str, token = ""):
+  bio_msg = {"token":token, "bio":{"entry":new_bio,"timestamp":str(time.time())}}
+  return json.dumps(bio_msg)
 

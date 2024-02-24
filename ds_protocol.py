@@ -23,8 +23,8 @@ BIO = "bio" # change bio
 POST = "post" # make post
 
 # Response commands:
-ERROR = 0 # an error occured
-OK = 1 # Connection was success
+ERROR = "error" # an error occured
+OK = "ok" # Connection was success
 
 
 def extract_json(json_msg:str) -> msg_info: # Connection is a namedtuple
@@ -41,7 +41,6 @@ def extract_json(json_msg:str) -> msg_info: # Connection is a namedtuple
   2. 
 
   {"response": {"type": "ok", "message": "Welcome to the ICS 32 Distributed Social!", "token": "2a07b9b4-3016-485d-833c-66e895f98ba9"}}
-
   '''
   try:
     json_obj = json.loads(json_msg)
@@ -54,4 +53,13 @@ def extract_json(json_msg:str) -> msg_info: # Connection is a namedtuple
   return msg_info(type, message, token)
 
 
+def join(username:str, password:str):
+  pass
+
+def bio():
+  pass
+
+def post():
+  pass
   
+

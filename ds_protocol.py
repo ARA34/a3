@@ -110,13 +110,12 @@ def join(server:str, port:int, username:str, password:str, token=""):
 def post(server:str, port:int, username:str, password:str, message:str):
   post_msg = {"token":"","post":{"entry":message, "timestamp":""}}
   post_msg = json.dumps(post_msg)
-
-
-  dsc.send(server=server,port=port,username=username,password=password,message=message,bio="")
+  dsc.send(server=server,port=port,username=username,password=password,message=message)
 
 
 
-def bio(new_bio:str, token = ""):
-  bio_msg = {"token":token, "bio":{"entry":new_bio,"timestamp":str(time.time())}}
-  return json.dumps(bio_msg)
+def bio(server:str, port:int, username:str, password:str, new_bio:str):
+  bio_msg = {"token":"", "bio":{"entry":new_bio,"timestamp":str(time.time())}}
+  dsc.send(server=server, port=port, username=username, password=password,message="",bio=new_bio)
+
 

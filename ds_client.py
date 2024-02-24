@@ -70,18 +70,17 @@ def send(server:str, port:int, username:str, password:str, message:str, bio:str=
 
 
     json_msg = ""
+    usr_token = get_token(_conn, username, password)
     if (username and password !="") and (message == ""): # joining
         json_msg = {"join": {"username": username,"password": password, "token":""}}
-    elif message != "" and bio == "":
-        usr_token = get_token(_conn, username, password)
-        json_msg = {"token":usr_token,"post":{"entry":message, "timestamp":time.time()}}
+    elif message != "" and bio == None:
+        json_msg = {"token":usr_token,"post":{"entry":message, "timestamp":str(time.time())}}
         # json_msg = dsp.post(message)
         # msg_type = dsp.POST
-        pass
     elif message == "" and bio != "":
         # json_msg = dsp.bio(bio)
         # msg_type = dsp.BIO
-        pass
+        json_msg = {"token":usr_token, "bio":{"entry":bio,"timestamp":str(time.time())}}
     else:
         print("something went wrong when assigning json_msg")
 

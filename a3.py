@@ -19,12 +19,13 @@ def main():
     OPTIONS2 = "Now that you've created an account or logged in.\nWould you like to post(post) or change bio(bio)?\n'Q' to quit."
     currfolder = Path(".").resolve()
 
+    USERNAME = "melonmusk"
+    PASSWORD = "XA123"
+    BIO = "this is me"
+
     server = "168.235.86.101"
     port = 3021
     # dsc.send(server, port, "nsndadasnjkadn", "1234","")
-
-
-
 
     # creating an account twice doesnt do anything different, just returns token
 
@@ -48,26 +49,22 @@ def main():
                 n_profile.save_profile(file)
             except DsuFileError:
                 print("There was an error saving user profile to a file")
+            n_profile.load_profile(Path(file))
+            print(dsp.join(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password)) # creates account
+            print(dsp.bio(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,new_bio=n_profile.bio)) # changes bio
 
-            print(dsp.join(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,bio=n_profile.bio)) # creates account
             
             usr_input_2 = input(OPTIONS2)
-            n_profile.load_profile()
             while usr_input_2 != "Q":
                 if usr_input_2 == dsp.POST:
                     post_in = input("What would you like to post:")
-                    print(dsp.post(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,message=post_in,bio="")) # creates account
+                    print(dsp.post(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,message=post_in)) # posts for user
                 elif usr_input_2 == dsp.BIO:
                     post_in = input("What would you like to change bio:")
+                    print(dsp.bio(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,bio=post_in)) # changes bio
 
                 usr_input_2 = input(OPTIONS2)
         usr_input = input(OPTIONS1)
-
-
-        
-
-
-
 
 
 if __name__ == "__main__":

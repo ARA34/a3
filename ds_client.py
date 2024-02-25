@@ -63,7 +63,7 @@ def send(server:str, port:int, username:str, password:str, message:str, bio:str=
   try:
 
     sock = connect_to_server(server,port)
-    if sock ==None:
+    if sock == None:
         print("couldn't connect to server")
         return
     _conn = init(sock)
@@ -101,7 +101,8 @@ def get_token(_conn:Connection, username:str, password:str) -> str:
       parsed_resp = dsp.extract_json(resp)
     except:
       dsp.DSPServerError
-    if resp.type == dsp.OK:
+
+    if parsed_resp.type == dsp.OK:
       return str(parsed_resp.token)
     else:
       return ""

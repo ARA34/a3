@@ -11,17 +11,24 @@ import ds_protocol as dsp
 import ds_client as dsc
 from ui import * # do not have to import Profile.py because its in ui.py
 from pathlib import Path
+import ui2
 
 
+
+def print_profile(n_profile:Profile):
+    print(n_profile.username)
+    print(n_profile.password)
+    print(n_profile.bio)
+    print(n_profile._posts)
 
 def main():
     OPTIONS1 = "Hello Welcome to Journaling program.\nCreate or log into existing account(join).\n'Q' to quit.\n"
-    OPTIONS2 = "Now that you've created an account or logged in.\nWould you like to post(post) or change bio(bio)?\n'Q' to quit."
+    OPTIONS2 = "Now that you've created an account or logged in.\nWould you like to post(-post) or change bio(-bio) or both?\n'Q' to quit.\n"
     currfolder = Path(".").resolve()
 
     USERNAME = "melonmusk"
     PASSWORD = "XA123"
-    BIO = "this is me"
+    BIO = ""
 
     server = "168.235.86.101"
     port = 3021
@@ -55,14 +62,13 @@ def main():
 
             
             usr_input_2 = input(OPTIONS2)
+            parsed_input_2 = ui2.parse_input_options(usr_input_2) # returns a list of tuples
             while usr_input_2 != "Q":
-                if usr_input_2 == dsp.POST:
-                    post_in = input("What would you like to post:")
-                    print(dsp.post(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,message=post_in)) # posts for user
-                elif usr_input_2 == dsp.BIO:
-                    post_in = input("What would you like to change bio:")
-                    print(dsp.bio(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,bio=post_in)) # changes bio
-
+                if "-post" or "-bio" in usr_input_2:
+                    for tup in parsed_input_2:
+                        ui2.run_options(n_profile, tup)
+                else:
+                    print("Wrong input try again.")
                 usr_input_2 = input(OPTIONS2)
         usr_input = input(OPTIONS1)
 

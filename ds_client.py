@@ -74,87 +74,20 @@ def send(server:str, port:int, username:str, password:str, message:str, bio:str=
 
     if (username and password !="") and (message == "") and bio == None: # joining
         json_msg = {"join": {"username": username,"password": password, "token":""}}
-        print(dsp.JOIN)
     elif message != "" and bio == None:
         json_msg = {"token":usr_token,"post":{"entry":message, "timestamp":str(time.time())}}
-        print(dsp.POST)
     elif message == "" and bio != "":
         json_msg = {"token":usr_token, "bio":{"entry":bio,"timestamp":str(time.time())}}
-        print(dsp.BIO)
     else:
-        print("something went wrong when assigning json_msg")
+        print("something went wrong.")
 
     json_msg = json.dumps(json_msg)
     print(f"JSON_MSG: {json_msg}")
     write_command(_conn, json_msg)
     response = read_command(_conn)
     print(f"RESPONSE: {response}")
-    # return True
-    return True
-  
-
-
-
-
-
-  #TODO: return either True or False depending on results of required operation
-  # join_msg = {"join": {"username": username,"password": password, "token":""}}
-  # join_msg = json.dumps(join_msg)
-
-  # post_msg = {"token":"","post":{"entry":message, "timestamp":""}}
-  # post_msg = json.dumps(post_msg)
-
-  # bio_msg = {"token":"", "bio":{"entry":"","timestamp":""}}
-  # bio_msg = json.dumps(bio_msg)
-
-
-
-  # json_msg = ""
-  # msg_type = ""
-
-  # if (username and password !="") and (message and bio == ""):
-  #     json_msg = dsp.join(username, password)
-  #     msg_type = dsp.JOIN
-  # elif message != "" and bio == "":
-  #     json_msg = dsp.post(message)
-  #     msg_type = dsp.POST
-  # elif message == "" and bio != "":
-  #     json_msg = dsp.bio(bio)
-  #     msg_type = dsp.BIO
-  # else:
-  #     print("something went wrong when assigning json_msg")
-  
-  # try:
-  #     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
-  #       client.connect((server, port))
-  #       send = client.makefile("w")
-  #       recv = client.makefile("r")
-
-  #       send.write(json_msg + "\r\n") # json_msg is assigned above
-  #       send.flush()
-  #       resp = recv.readline()
-
-
-  #       print(resp) # printing the response(only error and ok formats)
-
-  #       parsed_resp = dsp.extract_json(resp)
-  #       p_type = parsed_resp.type
-  #       p_message = parsed_resp.message
-  #       p_token = parsed_resp.token
-
-  #       if p_type == dsp.OK:
-  #           # no error
-  #           # load the profile that has corresponding username and password
-  #           # save the token in the profile somehow might be wrong
-            
-  #           # at this point, the user's token is already loaded
-  #           pass
-
-  #       elif p_type == dsp.ERROR:
-  #           print("Error Message: " + p_message)
-
-    # return True  # twas successful
-
+    
+    return True # twas successful
   except:
       return False # twas not successful
 
@@ -162,10 +95,16 @@ def send(server:str, port:int, username:str, password:str, message:str, bio:str=
 def get_token(_conn:Connection, username:str, password:str) -> str:
     join_msg = {"join": {"username": username,"password": password, "token":""}}
     join_msg = json.dumps(join_msg)
-    write_command(_conn,join_msg)
-    resp = read_command(_conn)
-    parsed_resp = dsp.extract_json(resp)
-    return str(parsed_resp.token)
+    try:
+      write_command(_conn,join_msg)
+      resp = read_command(_conn)
+      parsed_resp = dsp.extract_json(resp)
+    except:
+      dsp.DSPServerError
+    if resp.type == dsp.OK:
+      return str(parsed_resp.token)
+    else:
+      return ""
 
    
     

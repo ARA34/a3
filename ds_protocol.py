@@ -94,8 +94,8 @@ def extract_json(json_msg:str) -> msg_info:
 
 
 def join(server:str, port:int, username:str, password:str, token=""):
-  join_msg = {"join": {"username": username,"password": password, "token":token}}
-  join_msg = json.dumps(join_msg)
+  # join_msg = {"join": {"username": username,"password": password, "token":token}}
+  # join_msg = json.dumps(join_msg)
 
 
   dsc.send(server=server, port=port, username=username, password=password, message="",bio=None)
@@ -103,8 +103,8 @@ def join(server:str, port:int, username:str, password:str, token=""):
   
 
 def post(server:str, port:int, username:str, password:str, message:str):
-  post_msg = {"token":"","post":{"entry":message, "timestamp":""}}
-  post_msg = json.dumps(post_msg)
+  # post_msg = {"token":"","post":{"entry":message, "timestamp":""}}
+  # post_msg = json.dumps(post_msg)
 
 
   dsc.send(server=server,port=port,username=username,password=password,message=message)
@@ -112,8 +112,8 @@ def post(server:str, port:int, username:str, password:str, message:str):
 
 
 def bio(server:str, port:int, username:str, password:str, bio:str):
-  bio_msg = {"token":"", "bio":{"entry":bio,"timestamp":str(time.time())}}
-  bio_msg = json.dumps(bio_msg)
+  # bio_msg = {"token":"", "bio":{"entry":bio,"timestamp":str(time.time())}}
+  # bio_msg = json.dumps(bio_msg)
 
 
   dsc.send(server=server, port=port, username=username, password=password,message="",bio=bio)

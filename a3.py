@@ -29,10 +29,10 @@ OPTIONS1 = "Hello Welcome to Journaling program.\nCreate or log into existing ac
 OPTIONS2 = "Now that you've created an account or logged in.\nWould you like to post(-post) or change bio(-bio) or both?\n'Q' to quit.\n"
 
 def convert_online():
-    usr_input = input("Would you like to make this information public online(yes or no).\nSaying yes will make everything you type in public:\n").lower()
-    while usr_input != ("no" and "yes"):
+    usr_input = input("Would you like to make this information public online(yes or no).\nSaying yes will make everything you type in public: \n").lower()
+    while usr_input != "no" and usr_input != "yes":
         print("Incorrect input")
-        usr_input = input("Would you like to make this information public online(yes or no):").lower()
+        usr_input = input("Would you like to make this information public online(yes or no): \n").lower()
     return str(usr_input)
 
 
@@ -104,7 +104,7 @@ def main():
                 print(command_P(tup_list, user_profile))
             else:
                 print("There is no profile loaded. Run commands 'C' or 'O.'")
-
+# some message
 
         elif command_input == "O":
             try:

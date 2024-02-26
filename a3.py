@@ -55,12 +55,7 @@ def main():
         if command_input == "C":
             directory_input = p_input_1[1]
             directory_input = Path(directory_input)
-
-
             subs, extra = p_input_1[2:]
-
-
-            print(f"parsed: {p_input_1}")
             command_c = command_C(directory_input, subs, extra)
 
 
@@ -83,7 +78,6 @@ def main():
             if profile_loaded_online:
                 allows = ["-addpost", "-bio"]
                 valid_tups = list(filter(lambda d:d[0] in allows, tup_list))
-                print(f"The valid tuples: {valid_tups}")
 
             if command_input_2 == "E":
                 # E edits username, password, and bio
@@ -92,7 +86,7 @@ def main():
                 directory_input = Path(directory_input)
                 editDSU(tup_list, directory_input, user_profile)
 
-                # None of the server connections are working...
+                # online publishing aspect
                 if profile_loaded_online:
                     dsp.join(server=user_profile.dsuserver, port=PORT, username=user_profile.username, password=user_profile.password) # creates account
                     dsp.bio(server=user_profile.dsuserver, port=PORT, username=user_profile.username, password=user_profile.password,bio=user_profile.bio) # changes bio
@@ -105,21 +99,63 @@ def main():
                         print("There is nothing to publish online")
             elif command_input_2 == "P":  
                 print(command_P(tup_list, user_profile))
+            else:
+                print("There is no profile loaded. Run commands 'C' or 'O.'")
+
+
         elif command_input == "O":
             try:
                 directory_input = p_input_1[1]
                 directory_input = Path(directory_input)
-                user_profile = loadDSU(directory_input)
-                profile_loaded_online = False
+                user_profile = loadDSU(directory_input) # command_O
+                print("Reminder: Everything you type is currently local")
             except:
                 raise DsuProfileError
+            
+            
+            online_question = convert_online()
+            if online_question == "yes":
+                profile_loaded_online = True
+                print("Reminder: Your profile, bio, and posts will now be public")
 
             input_2 = print_user_options_2()
             p_input_2 = parse_inputs(input_2)
             command_input_2 = p_input_2[0]
+            tup_list = p_input_2[2] # outside
+
+            if profile_loaded_online:
+                allows = ["-addpost", "-bio"]
+                valid_tups = list(filter(lambda d:d[0] in allows, tup_list))
+
+            if command_input_2 == "E":
+                editDSU(tup_list, directory_input, user_profile)
+                
+                # online publishing aspect
+                if profile_loaded_online:
+                    dsp.join(server=user_profile.dsuserver, port=PORT, username=user_profile.username, password=user_profile.password) # creates account
+                    dsp.bio(server=user_profile.dsuserver, port=PORT, username=user_profile.username, password=user_profile.password,bio=user_profile.bio) # changes bio
+
+                    if len(valid_tups) >= 1:
+                        for tup in valid_tups:
+                            # ("-addpost","helloworld")
+                            run_options(user_profile, tup, PORT) # published bio and posts
+                    else:
+                        print("There is nothing to publish online")
+            elif command_input_2 == "P":
+                print(command_P(tup_list, user_profile))
+            else:
+                print("There is not profile loaded. Run commands 'C' or 'O.'")
+
+
+
+            
+
+
+
+
             if command_input_2 == "E":
                 pass
-            elif command_input_2 == "O":
+            elif command_input_2 == "P":
                 pass
         input_1 = print_user_options()
         p_input_1 = parse_inputs(input_1)

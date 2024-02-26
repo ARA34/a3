@@ -376,9 +376,7 @@ def print_user_options():
     output_str = ""
     cmd_letter = str(input("Welcome! Do you want to create or load a DSU file (type 'C' to create or 'O' to load): ")) # can also enter admin
     output_str += cmd_letter + " "
-    if cmd_letter.strip() == "admin":
-       return "admin"
-    elif cmd_letter == "C":
+    if cmd_letter == "C":
         dir_input = str(input("Great! What is the name of the directory you want to create in:\n"))
         output_str += dir_input + " " + "-n" + " "
         filename = input("What is the name of the file you would like to create:\n")
@@ -390,8 +388,9 @@ def print_user_options():
     elif cmd_letter == "Q":
         output_str += "Q"
     else:
-        print("invalid statement, please try again.")
+        print("Invalid statement, please try again.")
     return output_str
+
 
 
 def print_user_options_2():
@@ -445,8 +444,6 @@ def print_cmds():
 #ADDED A3 FUNCTIONALITY
 
 def run_options(n_profile: Profile, tup:tuple, port:int):
-    print(n_profile == None)
-    print(f"tup: {tup}, port: {port}")
     command = tup[0]
     data = tup[1]
     # profile is working alright

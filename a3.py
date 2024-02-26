@@ -145,61 +145,8 @@ def main():
                 print(command_P(tup_list, user_profile))
             else:
                 print("There is not profile loaded. Run commands 'C' or 'O.'")
-
-
-
-            
-
-
-
-
-            if command_input_2 == "E":
-                pass
-            elif command_input_2 == "P":
-                pass
         input_1 = print_user_options()
         p_input_1 = parse_inputs(input_1)
-
-    # usr_input = input(OPTIONS1)
-    # n_profile = Profile(dsuserver=None, username=None, password=None)
-    # while usr_input != "Q":
-    #     if usr_input == dsp.JOIN: # joins a user or loads a user
-    #         username = input("Enter username:")
-    #         password = input("Enter password:")
-    #         bio = input("Enter bio:")
-    #         n_profile.dsuserver = SERVER
-    #         n_profile.username = username
-    #         n_profile.password = password
-    #         n_profile.bio = bio
-
-    #         filename_dsu = username + ".dsu"
-    #         file = CURRENT_FOLDER/filename_dsu
-    #         file.touch()
-
-    #         try:
-    #             n_profile.save_profile(file)
-    #         except DsuFileError:
-    #             print("There was an error saving user profile to a file")
-    #         n_profile.load_profile(Path(file))
-    #         print(dsp.join(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password)) # creates account
-    #         print(dsp.bio(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,bio=n_profile.bio)) # changes bio
-
-            
-    #         usr_input_2 = input(OPTIONS2)
-    #         parsed_input_2 = parse_input_options(usr_input_2) # list of tuples
-    #         while usr_input_2 != "Q":
-    #             if "-post" or "-bio" in usr_input_2:
-    #                 for tup in parsed_input_2:
-    #                     run_options(n_profile, tup, PORT)
-
-    #                     # -post hello world
-    #                     # [(-post, hello world), (bio, new bio)]
-    #             else:
-    #                 print("Wrong input try again.")
-    #             usr_input_2 = input(OPTIONS2)
-    #             parsed_input_2 = parse_input_options(usr_input_2) # list of tuples
-    #     usr_input = input(OPTIONS1)
-
 
 if __name__ == "__main__":
     main()

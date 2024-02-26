@@ -93,6 +93,9 @@ def main():
 
                     if len(valid_tups) >= 1:
                         for tup in valid_tups:
+
+
+                            # -post hello world -bio chnage bio
                             # ("-addpost","helloworld")
                             run_options(user_profile, tup, PORT) # published bio and posts
                     else:
@@ -147,6 +150,7 @@ def main():
                 print("There is not profile loaded. Run commands 'C' or 'O.'")
         input_1 = print_user_options()
         p_input_1 = parse_inputs(input_1)
+        command_input = p_input_1[0]
 
 if __name__ == "__main__":
     main()

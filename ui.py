@@ -392,7 +392,6 @@ def print_user_options():
     return output_str
 
 
-
 def print_user_options_2():
     # E -usr joe
     print("You have created or loaded a file!\n")

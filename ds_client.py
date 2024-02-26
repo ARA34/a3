@@ -49,7 +49,9 @@ def connect_to_server(host:str, port:int) ->socket.socket:
     except:
         return None
 
+
 def send(server:str, port:int, username:str, password:str, message:str, bio:str=None):
+
   '''
   The send function joins a ds server and sends a message, bio, or both
 
@@ -73,40 +75,39 @@ def send(server:str, port:int, username:str, password:str, message:str, bio:str=
 
     if (username and password !="") and (message == "") and bio == None: # joining
         json_msg = {"join": {"username": username,"password": password, "token":""}}
+
     elif message != "" and bio == None:
         json_msg = {"token":usr_token,"post":{"entry":message, "timestamp":str(time.time())}}
+
     elif message == "" and bio != "":
         json_msg = {"token":usr_token, "bio":{"entry":bio,"timestamp":str(time.time())}}
     else:
         print("something went wrong.")
 
+
     json_msg = json.dumps(json_msg)
     write_command(_conn, json_msg)
     response = read_command(_conn)
-    parsed_resp = dsp.extract_json(response)
+    parsed_resp = dsp.extract_json(response) # token
 
     if parsed_resp.type == dsp.OK:
-       return True
-    else:
-       return False
+        return True
+    elif parsed_resp.type == dsp.ERROR:
+        return False
   except:
-      return False # twas not successful
+      return "An error occured while sending."
+  
+  
 
 
 def get_token(_conn:Connection, username:str, password:str) -> str:
     join_msg = {"join": {"username": username,"password": password, "token":""}}
-    join_msg = json.dumps(join_msg)
-    try:
-      write_command(_conn,join_msg)
-      resp = read_command(_conn)
-      parsed_resp = dsp.extract_json(resp)
-    except:
-      dsp.DSPServerError
-
-    if parsed_resp.type == dsp.OK:
-      return str(parsed_resp.token)
-    else:
-      return ""
+    join_msg = json.dumps(join_msg)  
+    write_command(_conn,join_msg)
+    resp = read_command(_conn)
+    parsed_resp = dsp.extract_json(resp)
+    return str(parsed_resp.token)
+    
 
    
     

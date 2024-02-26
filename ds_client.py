@@ -61,7 +61,6 @@ def send(server:str, port:int, username:str, password:str, message:str, bio:str=
   :param bio: Optional, a bio for the user.
   '''
   try:
-
     sock = connect_to_server(server,port)
     if sock == None:
         print("couldn't connect to server")
@@ -82,12 +81,14 @@ def send(server:str, port:int, username:str, password:str, message:str, bio:str=
         print("something went wrong.")
 
     json_msg = json.dumps(json_msg)
-    print(f"JSON_MSG: {json_msg}")
     write_command(_conn, json_msg)
     response = read_command(_conn)
-    print(f"RESPONSE: {response}")
-    
-    return True # twas successful
+    parsed_resp = dsp.extract_json(response)
+
+    if parsed_resp.type == dsp.OK:
+       return True
+    else:
+       return False
   except:
       return False # twas not successful
 

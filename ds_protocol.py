@@ -94,28 +94,27 @@ def extract_json(json_msg:str) -> msg_info:
 
 
 def join(server:str, port:int, username:str, password:str, token=""):
-  # join_msg = {"join": {"username": username,"password": password, "token":token}}
-  # join_msg = json.dumps(join_msg)
-
-
   dsc.send(server=server, port=port, username=username, password=password, message="",bio=None)
+  print("Logged in!")
 
   
 
 def post(server:str, port:int, username:str, password:str, message:str):
-  # post_msg = {"token":"","post":{"entry":message, "timestamp":""}}
-  # post_msg = json.dumps(post_msg)
-
-
-  dsc.send(server=server,port=port,username=username,password=password,message=message)
+  message = message.strip()
+  if message != "":
+    dsc.send(server=server,port=port,username=username,password=password,message=message)
+    print(f"Your message [{message}] was posted")
+  else:
+    print("You cannot post empty or whitespace only posts. Please Try again.")
 
 
 
 def bio(server:str, port:int, username:str, password:str, bio:str):
-  # bio_msg = {"token":"", "bio":{"entry":bio,"timestamp":str(time.time())}}
-  # bio_msg = json.dumps(bio_msg)
-
-
-  dsc.send(server=server, port=port, username=username, password=password,message="",bio=bio)
+  bio = bio.strip()
+  if bio != "":
+    dsc.send(server=server, port=port, username=username, password=password,message="",bio=bio)
+    print(f"Your bio was changed to [{bio}]")
+  else:
+    print("You cannot have an empty or only whitespace bio. Please try again.")
 
 

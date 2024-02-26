@@ -11,66 +11,158 @@ import ds_protocol as dsp
 import ds_client as dsc
 from ui import * # do not have to import Profile.py because its in ui.py
 from pathlib import Path
-import ui2
+import sys
 
+#Would you like to go online or offline? ->
+
+USERNAME = "melonmusk"
+PASSWORD = "XA123"
+BIO = ""
+# C /Users/alexra/Documents/UCI_WINTER_2023/ICS_32/test_folder -n myjournal
+
+SERVER = "168.235.86.101"
+PORT = 3021
+CURRENT_FOLDER = Path(".").resolve()
+
+OFFLINE_ONLINE = "Hello Welcome to my Journaling program.\nWould you like to continue offline(offline) or online(online)?\n"
+OPTIONS1 = "Hello Welcome to Journaling program.\nCreate or log into existing account(join).\n'Q' to quit.\n"
+OPTIONS2 = "Now that you've created an account or logged in.\nWould you like to post(-post) or change bio(-bio) or both?\n'Q' to quit.\n"
+
+def convert_online():
+    usr_input = input("Would you like to make this information public online(yes or no).\nSaying yes will make everything you type in public:\n").lower()
+    while usr_input != ("no" and "yes"):
+        print("Incorrect input")
+        usr_input = input("Would you like to make this information public online(yes or no):").lower()
+    return str(usr_input)
 
 
 def print_profile(n_profile:Profile):
-    print(n_profile.username)
-    print(n_profile.password)
-    print(n_profile.bio)
-    print(n_profile._posts)
+    print("dsuserver" + n_profile.dsuserver)
+    print("username" + n_profile.username)
+    print("password" + n_profile.password)
+    print("bio" + n_profile.bio)
 
 def main():
-    OPTIONS1 = "Hello Welcome to Journaling program.\nCreate or log into existing account(join).\n'Q' to quit.\n"
-    OPTIONS2 = "Now that you've created an account or logged in.\nWould you like to post(-post) or change bio(-bio) or both?\n'Q' to quit.\n"
-    currfolder = Path(".").resolve()
 
-    USERNAME = "melonmusk"
-    PASSWORD = "XA123"
-    BIO = ""
+    input_1 = print_user_options() # outer user input
+    p_input_1 = parse_inputs(input_1)
+    command_input = p_input_1[0]
 
-    server = "168.235.86.101"
-    port = 3021
-    # dsc.send(server, port, "nsndadasnjkadn", "1234","")
+    user_profile = Profile(dsuserver=None, username=None, password=None)
+    profile_loaded_online = False
 
-    # creating an account twice doesnt do anything different, just returns token
+    while command_input != "Q":
+        if command_input == "C":
+            directory_input = p_input_1[1]
+            directory_input = Path(directory_input)
 
-    usr_input = input(OPTIONS1)
-    n_profile = Profile(dsuserver=None, username=None, password=None)
-    while usr_input != "Q":
-        if usr_input == dsp.JOIN: # joins a user or loads a user
-            username = input("Enter username:")
-            password = input("Enter password:")
-            bio = input("Enter bio:")
-            n_profile.dsuserver = server
-            n_profile.username = username
-            n_profile.password = password
-            n_profile.bio = bio
 
-            filename_dsu = username + ".dsu"
-            file = currfolder/filename_dsu
-            file.touch()
+            subs, extra = p_input_1[2:]
 
+
+            print(f"parsed: {p_input_1}")
+            command_c = command_C(directory_input, subs, extra)
+
+
+            user_profile.username = command_c[1]
+            user_profile.password = command_c[2]
+            user_profile.bio = command_c[3]
+            user_profile.dsuserver = command_c[4] # asking for dsu_server
+            print("Reminder: Everything you type is currently local")
+
+            online_question = convert_online()
+            if online_question == "yes":
+                profile_loaded_online = True
+                print("Reminder: Your profile, bio, and posts will now be public")
+
+            input_2 = print_user_options_2() # nested user input
+            p_input_2 = parse_inputs(input_2) # this a list of parsed input
+            command_input_2 = p_input_2[0]
+            tup_list = p_input_2[2]
+
+            if profile_loaded_online:
+                allows = ["-addpost", "-bio"]
+                valid_tups = list(filter(lambda d:d[0] in allows, tup_list))
+                print(f"The valid tuples: {valid_tups}")
+
+            if command_input_2 == "E":
+                # E edits username, password, and bio
+                directory_input = str(directory_input)
+                directory_input += "/" + extra + ".dsu"
+                directory_input = Path(directory_input)
+                editDSU(tup_list, directory_input, user_profile)
+
+                # None of the server connections are working...
+                if profile_loaded_online:
+                    dsp.join(server=user_profile.dsuserver, port=PORT, username=user_profile.username, password=user_profile.password) # creates account
+                    dsp.bio(server=user_profile.dsuserver, port=PORT, username=user_profile.username, password=user_profile.password,bio=user_profile.bio) # changes bio
+
+                    if len(valid_tups) >= 1:
+                        for tup in valid_tups:
+                            # ("-addpost","helloworld")
+                            run_options(user_profile, tup, PORT) # published bio and posts
+                    else:
+                        print("There is nothing to publish online")
+            elif command_input_2 == "P":  
+                print(command_P(tup_list, user_profile))
+        elif command_input == "O":
             try:
-                n_profile.save_profile(file)
-            except DsuFileError:
-                print("There was an error saving user profile to a file")
-            n_profile.load_profile(Path(file))
-            print(dsp.join(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password)) # creates account
-            print(dsp.bio(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,bio=n_profile.bio)) # changes bio
+                directory_input = p_input_1[1]
+                directory_input = Path(directory_input)
+                user_profile = loadDSU(directory_input)
+                profile_loaded_online = False
+            except:
+                raise DsuProfileError
+
+            input_2 = print_user_options_2()
+            p_input_2 = parse_inputs(input_2)
+            command_input_2 = p_input_2[0]
+            if command_input_2 == "E":
+                pass
+            elif command_input_2 == "O":
+                pass
+        input_1 = print_user_options()
+        p_input_1 = parse_inputs(input_1)
+
+    # usr_input = input(OPTIONS1)
+    # n_profile = Profile(dsuserver=None, username=None, password=None)
+    # while usr_input != "Q":
+    #     if usr_input == dsp.JOIN: # joins a user or loads a user
+    #         username = input("Enter username:")
+    #         password = input("Enter password:")
+    #         bio = input("Enter bio:")
+    #         n_profile.dsuserver = SERVER
+    #         n_profile.username = username
+    #         n_profile.password = password
+    #         n_profile.bio = bio
+
+    #         filename_dsu = username + ".dsu"
+    #         file = CURRENT_FOLDER/filename_dsu
+    #         file.touch()
+
+    #         try:
+    #             n_profile.save_profile(file)
+    #         except DsuFileError:
+    #             print("There was an error saving user profile to a file")
+    #         n_profile.load_profile(Path(file))
+    #         print(dsp.join(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password)) # creates account
+    #         print(dsp.bio(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password,bio=n_profile.bio)) # changes bio
 
             
-            usr_input_2 = input(OPTIONS2)
-            parsed_input_2 = ui2.parse_input_options(usr_input_2) # returns a list of tuples
-            while usr_input_2 != "Q":
-                if "-post" or "-bio" in usr_input_2:
-                    for tup in parsed_input_2:
-                        ui2.run_options(n_profile, tup)
-                else:
-                    print("Wrong input try again.")
-                usr_input_2 = input(OPTIONS2)
-        usr_input = input(OPTIONS1)
+    #         usr_input_2 = input(OPTIONS2)
+    #         parsed_input_2 = parse_input_options(usr_input_2) # list of tuples
+    #         while usr_input_2 != "Q":
+    #             if "-post" or "-bio" in usr_input_2:
+    #                 for tup in parsed_input_2:
+    #                     run_options(n_profile, tup, PORT)
+
+    #                     # -post hello world
+    #                     # [(-post, hello world), (bio, new bio)]
+    #             else:
+    #                 print("Wrong input try again.")
+    #             usr_input_2 = input(OPTIONS2)
+    #             parsed_input_2 = parse_input_options(usr_input_2) # list of tuples
+    #     usr_input = input(OPTIONS1)
 
 
 if __name__ == "__main__":

@@ -8,8 +8,12 @@
 
 from pathlib import Path
 from Profile import *
+import ds_protocol as dsp
+import ds_client as dsc
+import a3
 
 
+#A2 FUNCTIONALITY
 def recur_dir(directory: Path):
     # input: directory
     # output: list of paths
@@ -180,16 +184,20 @@ def command_C(directory: Path, subs, filename):
         file.touch()
         output = str(file)
 
-        username = input("Username: \n")
-        userpass = input("Pasword: \n")
-        userbio = input("Bio: \n")
+        dsu_server = input("Server IP: ")
+        username = input("Username: ")
+        userpass = input("Pasword: ")
+        userbio = input("Bio: ")
 
-        user = Profile(username=username,password=userpass) # missing dsuserver input
+        user = Profile(dsuserver=dsu_server, username=username,password=userpass) 
         user.bio = userbio
-        user.save_profile(file) # takes the file directory as input
+        try:
+            user.save_profile(file) # takes the file directory as input
+        except:
+            raise DsuFileError
     else:
         output = "ERROR"
-    return output, username, userpass, userbio
+    return output, username, userpass, userbio, dsu_server
 
 
 def command_D(file_dir: Path):
@@ -213,30 +221,32 @@ def command_R(file_dir: Path):
 
 
 def parse_input_general(o_input:str):
+    # UPDATED: Adapted from parse_input_options method
     # input: String o_input
     # output: List tuples matching sub with sub input
     parsed_list = []
     command_letter = o_input[0]
     o_input = o_input[2:]
-    dir_input = o_input.split("-")[0]
+    dir_input = o_input.split("-")[0] # first index when splitting by -
     dir_input = "".join(dir_input).strip()
 
+    # -bio, -post
     allowed_subs = ["-usr", "-pwd", "-bio", "-addpost", "-delpost", "-r","-f","-s","-e","-n", "-posts", "-post", "-all"]
-    allowed_subs_stripped = list(map(lambda d: d[1:], allowed_subs)) # commands without "-"
 
-    subs = list(filter(lambda i: i in allowed_subs, o_input.split())) # getting all the commands
+    # normality
 
-    input_split = o_input.split("-")[1:]
-    input_split = "".join(input_split).split()
+    tpl_list =[]
+
+    present_subs = list(filter(lambda d: d in allowed_subs, o_input.split()))
+    input_split = o_input.split()
     for i in range(len(input_split)):
-        if input_split[i] in allowed_subs_stripped:
-            input_split[i] = "_"
-
+        if input_split[i] in allowed_subs:
+            input_split[i] = "^"
     input_split = " ".join(input_split)
-    input_split = input_split.split("_")[1:]
+    input_split = input_split.split("^")[1:]
     input_split = list(map(lambda d:d.strip(), input_split))
+    tpl_list = list(map(lambda x,y: (x,y), present_subs, input_split))
 
-    tpl_list = list(map(lambda x,y: (x,y), subs, input_split))
     parsed_list = [command_letter, dir_input, tpl_list]
     return parsed_list
 
@@ -364,15 +374,13 @@ def print_user_options():
     # input: various strs
     # output: long str to parse
     output_str = ""
-    cmd_letter = str(input("Welcome! Do you want to create or load a DSU file (type 'C' to create or 'O' to load): \n")) # can also enter admin
+    cmd_letter = str(input("Welcome! Do you want to create or load a DSU file (type 'C' to create or 'O' to load): ")) # can also enter admin
     output_str += cmd_letter + " "
     if cmd_letter.strip() == "admin":
        return "admin"
     elif cmd_letter == "C":
         dir_input = str(input("Great! What is the name of the directory you want to create in:\n"))
-        output_str += dir_input + " "
-        sub_input = input("Please enter '-n' in order to specify your filename:\n")
-        output_str += sub_input + " "
+        output_str += dir_input + " " + "-n" + " "
         filename = input("What is the name of the file you would like to create:\n")
         output_str += filename
 
@@ -383,11 +391,11 @@ def print_user_options():
         output_str += "Q"
     else:
         print("invalid statement, please try again.")
-
     return output_str
 
 
 def print_user_options_2():
+    # E -usr joe
     print("You have created or loaded a file!\n")
     output_str = ""
     cmd_letter = input("Do you want to edit or print contents of a file (type 'E' to edit or 'P' to print contents):\n")
@@ -409,7 +417,7 @@ def take_sub_inputs():
     sub_input = input("Enter a sub input ('Q' for escape sub input menu):\n")
     while sub_input != "Q":
         sub_menu_inputs += sub_input + " "
-        sub_menu_input = input("Addtional Input:")
+        sub_menu_input = input("Addtional Input:\n")
         sub_menu_inputs += sub_menu_input + " "
         sub_input = input("Enter a sub input ('Q' for escape sub input menu):\n")
     return sub_menu_inputs
@@ -433,3 +441,50 @@ def print_cmds():
     print("'-posts' - Print all posts.")
     print("'-all' - Print all information.")
 
+
+#ADDED A3 FUNCTIONALITY
+
+def run_options(n_profile: Profile, tup:tuple, port:int):
+    print(n_profile == None)
+    print(f"tup: {tup}, port: {port}")
+    command = tup[0]
+    data = tup[1]
+    # profile is working alright
+    if command == "-addpost":
+        print(dsp.post(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password, message=data))
+    elif command == "-bio":
+        print(dsp.bio(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password, bio=data))
+    else:
+        print("return options failed.")
+
+
+def parse_input_options(str_input:str) -> list:
+    # input: String o_input
+    # output: List tuples matching sub with sub input
+
+    #-post hello -bio hi this my new bio
+
+    tpl_list =[]
+    allowed_subs = ["-addpost", "-bio"]
+
+    present_subs = list(filter(lambda d: d in allowed_subs, str_input.split()))
+    input_split = str_input.split()
+    for i in range(len(input_split)):
+        if input_split[i] in allowed_subs:
+            input_split[i] = "_"
+    input_split = " ".join(input_split)
+    input_split = input_split.split("_")[1:]
+    input_split = list(map(lambda d:d.strip(), input_split))
+    tpl_list = list(map(lambda x,y: (x,y), present_subs, input_split))
+    return tpl_list
+
+
+def sort_parsed_input(p_list:list):
+    # more specifically its taking a list of tuples and sorting out the ones that have commands -post and bio
+    allows = ["-addpost", "-bio"]
+    valid_tups = list(filter(lambda d: d[0] in allows, p_list))
+    if len(valid_tups) > 0:
+        
+        print("It seems you have stuff that can be published online.\n Would you like to publish this online?")
+
+    pass

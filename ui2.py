@@ -1,3 +1,5 @@
+#DETACHED
+
 import ds_client as dsc
 import ds_protocol as dsp
 import a3
@@ -26,7 +28,6 @@ def parse_input_options(str_input:str) -> list:
 
     tpl_list =[]
     allowed_subs = ["-post", "-bio"]
-    allowed_subs_strip = list(map(lambda s: s[1:], allowed_subs))
 
     present_subs = list(filter(lambda d: d in allowed_subs, str_input.split()))
     input_split = str_input.split()

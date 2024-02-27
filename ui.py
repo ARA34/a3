@@ -346,7 +346,7 @@ def get_user_info(tup: tuple, userprofile: Profile):
         output += "Bio: " + userprofile.bio + "\n"
     elif sub == "-post":
         if len(userprofile.get_posts()) != 0:
-            output += str(userprofile.get_posts()[sub_input].get_entry()) + "\n"
+            output += "Post at index [" + str(sub_input) + "]: " + str(userprofile.get_posts()[sub_input].get_entry()) + "\n"
         else:
             output += "No Posts."
     elif sub == "-posts":
@@ -415,7 +415,7 @@ def take_sub_inputs():
     sub_input = input("Enter a sub input ('Q' for escape sub input menu):\n")
     while sub_input != "Q":
         sub_menu_inputs += sub_input + " "
-        sub_menu_input = input("Addtional Input:\n")
+        sub_menu_input = input("Addtional Input (Enter blank to proceed without entering new info):\n")
         sub_menu_inputs += sub_menu_input + " "
         sub_input = input("Enter a sub input ('Q' for escape sub input menu):\n")
     return sub_menu_inputs
@@ -447,9 +447,9 @@ def run_options(n_profile: Profile, tup:tuple, port:int):
     data = tup[1]
     # profile is working alright
     if command == "-addpost":
-        print(dsp.post(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password, message=data))
+        dsp.post(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password, message=data)
     elif command == "-bio":
-        print(dsp.bio(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password, bio=data))
+        dsp.bio(server=n_profile.dsuserver, port=port, username=n_profile.username, password=n_profile.password, bio=data)
     else:
         print("return options failed.")
 

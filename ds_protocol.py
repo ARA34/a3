@@ -31,39 +31,6 @@ POST = "post" # make post
 ERROR = "error" # an error occured
 OK = "ok" # Connection was success
 
-
-# exp--protocol
-
-
-class DSPProtocol:
-  ERROR = "error"
-  OK = "ok"
-
-  JOIN = "join" # make account
-  BIO = "bio" # change bio
-  POST = "post" # make post
-  
-  def __init__(self, protocol=None, data=None) -> None:
-    self.protocol = protocol
-    self.data = data
-  
-  def format(dsp:DSPProtocol) -> str:
-    """
-    Takes a DSP object and formats it into a string
-    """
-    return f"{dsp.protocol}|{dsp.data}"
-  
-  def open(cmd:str) -> DSPProtocol:
-    """
-    Takes a string and converts to a DSP object if applicable
-    """
-
-    parts = cmd.split("|")
-    if len(parts) > 1:
-      return DSPProtocol(parts[0],parts[1])
-    else:
-      # not applicable
-      return DSPProtocol(DSPProtocol.ERROR) # returns dsp error object
     
 
 def extract_json(json_msg:str) -> msg_info:

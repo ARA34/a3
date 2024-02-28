@@ -22,7 +22,9 @@ Step 2: Running the program
 
     2. Then you will be asked to publish whatever you enter next online or remain offfline (at this point you have been offline)
 
-        - If you choose to publish information online, any profiles, posts, or change of bios, will be recorded on the server.
+        - If you choose to publish information online, any profiles, posts, or change of bios, will be recorded on the server. 
+        Also you will be prompted to enter a server address
+
         - If you choose to remain offline, you will continue on with the program without publishing anything online.
 
 

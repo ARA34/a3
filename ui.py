@@ -423,21 +423,21 @@ def take_sub_inputs():
 
 def print_edit_cmds():
     print("Now you will be entering edit commands and their respective inputs (for no input enter return):")
-    print("'-usr' - Edit username.")
-    print("'-pwd' - Edit password.")
-    print("'-bio' - Edit bio.")
+    print("'-usr'     - Edit username.")
+    print("'-pwd'     - Edit password.")
+    print("'-bio'     - Edit bio.")
     print("'-addpost' - Add a post.")
     print("'-delpost' - Delete a post.")
 
 
 def print_cmds():
     print("Now you will be entering print commands and their respective inputs (for no input enter return):")
-    print("'-usr' - Print username.")
-    print("'-pwd' - Print password.")
-    print("'-bio' - Print bio.")
-    print("'-post' - Print post based on ID.")
+    print("'-usr'   - Print username.")
+    print("'-pwd'   - Print password.")
+    print("'-bio'   - Print bio.")
+    print("'-post'  - Print post based on ID.")
     print("'-posts' - Print all posts.")
-    print("'-all' - Print all information.")
+    print("'-all'   - Print all information.")
 
 
 #ADDED A3 FUNCTIONALITY

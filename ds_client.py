@@ -74,6 +74,8 @@ def send(server: str, port: int, username: str,
         _conn = init(sock)
         json_msg = ""
         usr_token = get_token(_conn, username, password)
+
+        sending_two = False
         if (username and password != "") and (message == "") and bio is None:
             json_msg = {"join":
                         {"username": username,
@@ -87,13 +89,40 @@ def send(server: str, port: int, username: str,
             json_msg = {"token": usr_token,
                         "bio": {"entry": bio,
                                 "timestamp": str(time.time())}}
+        elif message != "" and bio != "":
+            sending_two = True
         else:
             print("something went wrong.")
-        json_msg = json.dumps(json_msg)
-        write_command(_conn, json_msg)
-        response = read_command(_conn)
-        parsed_resp = dsp.extract_json(response)
-        if parsed_resp.type == dsp.OK:
+        if sending_two:
+            json_msg_1 = {"token": usr_token,
+                          "post": {"entry": message,
+                                   "timestamp": str(time.time())}}
+            json_msg_2 = {"token": usr_token,
+                          "bio": {"entry": bio,
+                                  "timestamp": str(time.time())}}
+            json_msg_1 = json.dumps(json_msg_1)
+            write_command(_conn, json_msg_1)
+            response_1 = read_command(_conn)
+            parsed_r1 = dsp.extract_json(response_1)
+            resp_1_type = parsed_r1.type
+
+            json_msg_2 = json.dumps(json_msg_2)
+            _conn2 = init(sock)
+            write_command(_conn2, json_msg_2)
+            response_2 = read_command(_conn2)
+            parsed_r2 = dsp.extract_json(response_2)
+            resp_2_type = parsed_r2.type
+            if resp_1_type == dsp.OK and resp_2_type == dsp.OK:
+                satisfy = dsp.OK
+            else:
+                satisfy = dsp.ERROR
+        else:
+            json_msg = json.dumps(json_msg)
+            write_command(_conn, json_msg)
+            response = read_command(_conn)
+            parsed_resp = dsp.extract_json(response)
+            satisfy = parsed_resp.type
+        if satisfy == dsp.OK:
             return True
         elif parsed_resp.type == dsp.ERROR:
             return False
